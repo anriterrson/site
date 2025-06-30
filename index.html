@@ -1,185 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your IP & Location</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Cool gradient background */
-            margin: 0;
-            padding: 20px; /* Add some padding for smaller screens */
-            box-sizing: border-box;
-        }
-        .card {
-            background-color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            padding: 40px;
-            text-align: center;
-            max-width: 600px; /* Increased max-width for more content */
-            width: 100%; /* Make it fluid */
-            transition: transform 0.3s ease-in-out;
-            display: flex;
-            flex-direction: column;
-            gap: 15px; /* Spacing between elements */
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        .ip-text {
-            font-size: 2.2rem; /* Slightly adjusted for more info */
-            font-weight: 700;
-            color: #333;
-            word-break: break-all; /* Prevent overflow on small screens */
-        }
-        .label-text {
-            font-size: 1.1rem;
-            color: #555;
-            font-weight: 600;
-        }
-        .info-item {
-            font-size: 1rem;
-            color: #444;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-        .info-label {
-            font-weight: 600;
-            color: #667eea;
-        }
-        .loading-spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #667eea;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto 0;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .map-container {
-            width: 100%;
-            height: 300px; /* Fixed height for the map */
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        .map-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+  <meta charset="UTF-8">
+  <title>Your IP Address</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        /* Responsive adjustments */
-        @media (max-width: 640px) {
-            .card {
-                padding: 30px;
-            }
-            .ip-text {
-                font-size: 1.6rem;
-            }
-            .label-text {
-                font-size: 0.9rem;
-            }
-            .info-item {
-                font-size: 0.9rem;
-            }
-            .map-container {
-                height: 200px; /* Smaller map on small screens */
-            }
-        }
-    </style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px 60px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      max-width: 90%;
+    }
+
+    .glass-card h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    .glass-card .ip {
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #00ffc8;
+      margin-bottom: 30px;
+    }
+
+    .location-details {
+      text-align: left;
+      font-size: 1.2em;
+      line-height: 2;
+      color: #e0f7fa;
+    }
+
+    .location-details span {
+      color: #00ffc8;
+      font-weight: bold;
+    }
+
+    @media screen and (max-width: 600px) {
+      .glass-card {
+        padding: 30px 20px;
+      }
+
+      .glass-card h1 {
+        font-size: 2em;
+      }
+
+      .glass-card .ip {
+        font-size: 1.5em;
+      }
+
+      .location-details {
+        font-size: 1em;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="card">
-        <p class="label-text">Your Public IP Address:</p>
-        <div id="ipAddressDisplay" class="ip-text">
-            <div class="loading-spinner"></div>
-            <p class="text-gray-500 text-base mt-2">Fetching details...</p>
-        </div>
+  <div class="glass-card">
+    <h1>Your IP Address</h1>
+    <div class="ip">192.168.1.1</div>
 
-        <div id="locationDetails" class="mt-4 text-left w-full">
-            <p class="label-text mb-2">Location Details:</p>
-            <div id="countryInfo" class="info-item"></div>
-            <div id="cityInfo" class="info-item"></div>
-            <div id="timezoneInfo" class="info-item"></div>
-            <div id="loadingMap" class="loading-spinner mt-4 hidden"></div>
-        </div>
-
-        <div id="mapContainer" class="map-container hidden">
-            <!-- Map will be loaded here -->
-        </div>
+    <div class="location-details">
+      <div><span>Location Details:</span></div>
+      <div>Country: <span>N/A</span></div>
+      <div>City: <span>N/A</span></div>
+      <div>Time Zone: <span>N/A</span></div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const ipAddressDisplay = document.getElementById('ipAddressDisplay');
-            const countryInfo = document.getElementById('countryInfo');
-            const cityInfo = document.getElementById('cityInfo');
-            const timezoneInfo = document.getElementById('timezoneInfo');
-            const mapContainer = document.getElementById('mapContainer');
-            const loadingMap = document.getElementById('loadingMap');
-
-            // Initial loading state
-            ipAddressDisplay.innerHTML = `<div class="loading-spinner"></div><p class="text-gray-500 text-base mt-2">Fetching IP...</p>`;
-            countryInfo.innerHTML = `<span class="info-label">Country:</span> Loading...`;
-            cityInfo.innerHTML = `<span class="info-label">City:</span> Loading...`;
-            timezoneInfo.innerHTML = `<span class="info-label">Time Zone:</span> Loading...`;
-            mapContainer.classList.add('hidden'); // Hide map until loaded
-
-            try {
-                // Fetch IP address and location details from ip-api.com
-                const response = await fetch('http://ip-api.com/json/');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    ipAddressDisplay.innerHTML = data.query; // The IP address
-                    countryInfo.innerHTML = `<span class="info-label">Country:</span> ${data.country} (${data.countryCode})`;
-                    cityInfo.innerHTML = `<span class="info-label">City:</span> ${data.city}, ${data.regionName}`;
-                    timezoneInfo.innerHTML = `<span class="info-label">Time Zone:</span> ${data.timezone}`;
-
-                    // Load map
-                    loadingMap.classList.remove('hidden'); // Show map loading spinner
-                    const mapUrl = `https://maps.google.com/maps?q=${data.lat},${data.lon}&z=15&output=embed`;
-                    mapContainer.innerHTML = `<iframe src="${mapUrl}" allowfullscreen="" loading="lazy"></iframe>`;
-                    mapContainer.classList.remove('hidden'); // Show map container
-                    loadingMap.classList.add('hidden'); // Hide map loading spinner
-                } else {
-                    throw new Error(`API error: ${data.message || 'Unknown error'}`);
-                }
-
-            } catch (error) {
-                console.error('Error fetching IP address and location:', error);
-                ipAddressDisplay.innerHTML = `
-                    <p class="text-red-500 text-lg">Failed to load IP.</p>
-                    <p class="text-red-400 text-sm mt-1">Check connection.</p>
-                `;
-                countryInfo.innerHTML = `<span class="info-label">Country:</span> N/A`;
-                cityInfo.innerHTML = `<span class="info-label">City:</span> N/A`;
-                timezoneInfo.innerHTML = `<span class="info-label">Time Zone:</span> N/A`;
-                mapContainer.classList.add('hidden');
-                loadingMap.classList.add('hidden');
-            }
-        });
-    </script>
+  </div>
 </body>
 </html>
