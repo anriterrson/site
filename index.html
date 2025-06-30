@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Your IP Address</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
   <style>
     * {
       margin: 0;
@@ -24,55 +28,55 @@
     .glass-card {
       background: rgba(255, 255, 255, 0.1);
       border-radius: 20px;
-      padding: 40px 60px;
+      padding: 30px 40px;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
       text-align: center;
       border: 1px solid rgba(255, 255, 255, 0.2);
       max-width: 90%;
+      width: 500px;
     }
 
     .glass-card h1 {
-      font-size: 2.5em;
+      font-size: 2.2em;
       margin-bottom: 20px;
-      letter-spacing: 1px;
     }
 
-    .glass-card .ip {
-      font-size: 1.8em;
-      font-weight: bold;
+    .ip {
+      font-size: 1.5em;
       color: #00ffc8;
-      margin-bottom: 30px;
+      font-weight: bold;
+      margin-bottom: 20px;
     }
 
     .location-details {
       text-align: left;
-      font-size: 1.2em;
-      line-height: 2;
+      font-size: 1.1em;
+      line-height: 1.6;
       color: #e0f7fa;
+      margin-bottom: 20px;
     }
 
     .location-details span {
-      color: #00ffc8;
       font-weight: bold;
+      color: #00ffc8;
+    }
+
+    #map {
+      height: 300px;
+      border-radius: 10px;
+      margin-top: 10px;
     }
 
     @media screen and (max-width: 600px) {
       .glass-card {
-        padding: 30px 20px;
+        padding: 20px;
+        width: 90%;
       }
 
-      .glass-card h1 {
-        font-size: 2em;
-      }
-
-      .glass-card .ip {
-        font-size: 1.5em;
-      }
-
-      .location-details {
-        font-size: 1em;
+      #map {
+        height: 200px;
       }
     }
   </style>
@@ -80,14 +84,42 @@
 <body>
   <div class="glass-card">
     <h1>Your IP Address</h1>
-    <div class="ip">192.168.1.1</div>
-
+    <div class="ip" id="ip">Loading...</div>
     <div class="location-details">
-      <div><span>Location Details:</span></div>
-      <div>Country: <span>N/A</span></div>
-      <div>City: <span>N/A</span></div>
-      <div>Time Zone: <span>N/A</span></div>
+      <div>Country: <span id="country">Loading...</span></div>
+      <div>City: <span id="city">Loading...</span></div>
+      <div>Time Zone: <span id="timezone">Loading...</span></div>
     </div>
+    <div id="map"></div>
   </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    fetch("https://ipapi.co/json/")
+      .then((response) => response.json())
+      .then((data) => {
+        document.getElementById("ip").textContent = data.ip;
+        document.getElementById("country").textContent = data.country_name;
+        document.getElementById("city").textContent = data.city;
+        document.getElementById("timezone").textContent = data.timezone;
+
+        // Map
+        const lat = data.latitude;
+        const lon = data.longitude;
+
+        const map = L.map("map").setView([lat, lon], 10);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: '© OpenStreetMap contributors',
+        }).addTo(map);
+        L.marker([lat, lon]).addTo(map).bindPopup("You are here").openPopup();
+      })
+      .catch((error) => {
+        document.getElementById("ip").textContent = "Error loading IP";
+        document.getElementById("country").textContent = "N/A";
+        document.getElementById("city").textContent = "N/A";
+        document.getElementById("timezone").textContent = "N/A";
+        console.error("IP data error:", error);
+      });
+  </script>
 </body>
 </html>
